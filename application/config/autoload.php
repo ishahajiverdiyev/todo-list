@@ -61,6 +61,7 @@ $autoload['packages'] = [];
 $autoload['libraries'] = [
   "Input",
   "Flash",
+  "database",
   // "Custom_model"
 ];
 
