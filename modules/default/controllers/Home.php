@@ -7,37 +7,32 @@ class Home extends MY_Controller {
     parent::__construct();
   }
 
-  function index() {
-    $this->load->view('index');
-  }
+    public function calculate(){
+      $this->load->view('tasks/calculate');
+    }
 
-
-   public function getAll(){
+   public function index(){
     $this->load->model("Add_model","model");
-    $databaseInfo = $this->model->getAll();
-    $data=$databaseInfo["data"];
-    $this->load->view('table',[
-      "data" => $data
-    ]);
+    $this->load->view('tasks/index');
   }
 
-  public function table(){
-
-    $this->load->view('table');
-  }
+    public function listLive(){
+     $this->load->model("Add_model","model");
+     $res = $this->model->getAll();
+     return json_response($res);
+   }
 
   public function addInfo(){
+    $params = [
+      "title" => $this->input->post("title"),
+      "description" => $this->input->post("description"),
+    ];
+    if(!$params["title"] || !$params["description"]){
+      return json_response(rest_response(400, "Title and description required"));
+    }
     $this->load->model("Add_model","model");
-    $title=$this->input->post("title");
-    $description=$this->input->post("description");
-    if(!$title ||!$description){
-      redirect("getAll");
-  }
-    $data = $this->model->addData(array(
-        "title" => $title,
-        "description" => $description,
-    ));
-    redirect("getAll");
+    $res = $this->model->addData($params);
+    return json_response($res);
   }
 
 
@@ -51,8 +46,8 @@ class Home extends MY_Controller {
   public function edit($id){
     $this->load->model("Add_model","model");
     $databaseInfo = $this->model->edit($id);
-    $data=$databaseInfo["data"];
-    $this->load->view('updateIndex',[
+    $data = $databaseInfo["data"];
+    $this->load->view('tasks/updateIndex',[
       "data" => $data
     ]);
   }

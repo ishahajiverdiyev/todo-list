@@ -9,7 +9,6 @@ class Add_model extends CI_Model {
     parent::__construct();
   }
 
-
   public function getAll() {
     $sql_query = "SELECT
                     id,
@@ -18,7 +17,8 @@ class Add_model extends CI_Model {
                     is_checked,
                     created_at
                  FROM `$this->table`
-                 LIMIT 5";
+                 ORDER BY `created_at` DESC";
+
     $info_list_query = $this->db->query($sql_query);
     $info_list = $info_list_query->result_array();
     return rest_response(
@@ -29,8 +29,15 @@ class Add_model extends CI_Model {
   }
 
 
-  public function addData($data=array()){
-    return $this->db->insert($this->table, $data);
+  public function addData($params){
+    $this->db->insert($this->table, [
+      "title" => $params["title"],
+      "description" => $params["description"]
+    ]);
+    return rest_response(
+      200,
+      lang("Success")
+    );
   }
 
 
